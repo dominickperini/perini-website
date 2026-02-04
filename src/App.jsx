@@ -304,6 +304,7 @@ const styles = `
       gap: 8px;
     }
     .brightness-label { margin-right: 0; }
+    .brightness-buttons { flex-shrink: 0; white-space: nowrap; }
     .brightness-buttons { gap: 5px; }
   }
 `;
