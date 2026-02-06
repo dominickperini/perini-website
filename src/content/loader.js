@@ -1,5 +1,44 @@
 import fm from 'front-matter';
 
+/**
+ * Collapse consecutive plain-text lines into single lines (paragraph flow),
+ * while preserving blank lines, separators, bullets, indented lines, etc.
+ */
+function collapseLines(text) {
+  const lines = text.split('\n');
+  const result = [];
+  let buffer = '';
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const trimmed = line.trim();
+
+    const isSpecial =
+      trimmed === '' ||
+      /^={3,}$/.test(trimmed) ||
+      /^-{3,}$/.test(trimmed) ||
+      /^\{\{preview:.+\}\}$/.test(trimmed) ||
+      /^◦/.test(trimmed) ||
+      /^\d+\./.test(trimmed) ||
+      /^←/.test(trimmed) ||
+      line.startsWith('  ');
+
+    if (isSpecial) {
+      if (buffer) {
+        result.push(buffer);
+        buffer = '';
+      }
+      result.push(line);
+    } else {
+      buffer = buffer ? buffer + ' ' + trimmed : line;
+    }
+  }
+
+  if (buffer) result.push(buffer);
+
+  return result.join('\n');
+}
+
 // Auto-discover all blog posts as raw text
 const blogFiles = import.meta.glob('/content/blog/*.mdx', {
   query: '?raw',
@@ -31,7 +70,7 @@ export function getBlogPosts() {
       const slug = path.split('/').pop().replace('.mdx', '');
       return {
         slug,
-        text: body.trim(),
+        text: collapseLines(body.trim()),
         title: attributes.title || 'Untitled',
         date: attributes.date || '1970-01-01'
       };
@@ -65,7 +104,7 @@ export function getBlogPostByIndex(index) {
 export function getAboutContent() {
   const raw = Object.values(aboutFile)[0];
   if (!raw) return '';
-  return fm(raw).body.trim();
+  return collapseLines(fm(raw).body.trim());
 }
 
 /**
@@ -75,5 +114,5 @@ export function getAboutContent() {
 export function getNowContent() {
   const raw = Object.values(nowFile)[0];
   if (!raw) return '';
-  return fm(raw).body.trim();
+  return collapseLines(fm(raw).body.trim());
 }
