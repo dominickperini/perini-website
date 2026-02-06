@@ -6,10 +6,7 @@ import { getBlogPosts } from './loader';
  * @returns {string}
  */
 function formatDate(dateStr) {
-  const d = new Date(dateStr);
-  const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
+  const [year, month, day] = dateStr.split('-');
   return `${year}.${month}.${day}`;
 }
 
