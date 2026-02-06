@@ -21,6 +21,7 @@ function collapseLines(text) {
       /^◦/.test(trimmed) ||
       /^\d+\./.test(trimmed) ||
       /^←/.test(trimmed) ||
+      /^\d{4}\.\d{2}\.\d{2}$/.test(trimmed) ||
       line.startsWith('  ');
 
     if (isSpecial) {
@@ -72,7 +73,9 @@ export function getBlogPosts() {
         slug,
         text: collapseLines(body.trim()),
         title: attributes.title || 'Untitled',
-        date: attributes.date || '1970-01-01'
+        date: attributes.date instanceof Date
+          ? attributes.date.toISOString().split('T')[0]
+          : attributes.date || '1970-01-01'
       };
     })
     .sort((a, b) => new Date(b.date) - new Date(a.date));
