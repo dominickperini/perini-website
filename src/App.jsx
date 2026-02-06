@@ -277,7 +277,7 @@ const styles = `
       font-size: 10px;
     }
     .sidebar-footer a { display: inline; }
-    .sidebar-footer .copyright { margin-top: 0; }
+    .sidebar-footer .copyright { margin-top: 0; white-space: nowrap; }
     .main-content {
       padding: 20px;
       padding-bottom: 120px;
@@ -299,9 +299,9 @@ const styles = `
     }
     .brightness-inline {
       display: flex;
-      flex-direction: row;
+      flex-direction: column;
       align-items: center;
-      gap: 8px;
+      gap: 4px;
     }
     .brightness-label { margin-right: 0; }
     .brightness-buttons { flex-shrink: 0; white-space: nowrap; }
